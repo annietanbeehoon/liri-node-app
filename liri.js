@@ -62,7 +62,7 @@ function getTweets() {
                     + '--------------------------------------------\n';
 
             }
-            fs.appendFile('./logged.txt', dataLog, (err) => {
+            fs.appendFile('./logged.txt', dataLog, function (err) {
                 if (err) throw err;
                 console.log(dataLog);
             });
@@ -79,7 +79,7 @@ function getSpotify() {
 
     var spotifySearch;
     if (option === undefined) {
-        spotifySearch = "the sign ace of base"
+        spotifySearch = "the sign ace of base";
         //return console.log("Artist: Ace of Base \nSong's name: 'The Sign' \nPreview Link: 'https://open.spotify.com/track/3DYVWvPh3kGwPasp7yjahc' \nAlbum: 'The Sign' ");
     } else {
         spotifySearch = option;
@@ -96,16 +96,16 @@ function getSpotify() {
             return console.log('Error occurred: ' + err);
         }
         // Artist(s), song's name, a preview link of the song from Spotify, the album that the song is from
-        dataLog = '\n------------\n' + 'Song info:\n' + '------------\n'+'\n' 
+        dataLog = '\n------------\n' + 'Song info:\n' + '------------\n' + '\n'
             + "Artist : " + data.tracks.items[0].artists[0].name + '\n'
             + "Song's name : " + data.tracks.items[0].name + '\n'
             + "Preview link : " + data.tracks.items[0].preview_url + '\n'
             + "Album : " + data.tracks.items[0].album.name;
 
-        fs.appendFile('./logged.txt', dataLog, (err) => {
+        fs.appendFile('./logged.txt', dataLog, function (err) {
             if (err) throw err;
             console.log(dataLog);
-        })
+        });
     });
 }
 
@@ -142,10 +142,10 @@ function getMovie() {
                 + "\nPlot: " + JSON.parse(body).Plot
                 + "\nActors: " + JSON.parse(body).Actors;
 
-            fs.appendFile('./logged.txt', dataLog, (err) => {
+            fs.appendFile('./logged.txt', dataLog, function (err) {
                 if (err) throw err;
                 console.log(dataLog);
-            })
+            });
         }
     });
 }
@@ -165,10 +165,9 @@ function getUsersChoice() {
             console.log("Log the dataArr index 0: ", dataArr[0]);
             option = dataArr[1];
             console.log("Log the dataArr index 1 : ", dataArr[1]);
-            
+
             whatToDo();// Execute the do-what-it-says
-            
-        };
+        }
     });
-};
+}
 whatToDo();

@@ -29,7 +29,7 @@ function whatToDo() {
             break;
 
         default:
-            console.log("Please try again. Command options are: 'my-tweets', 'spotify-this-song', 'movie-this', 'or do-what-it-says' ");
+            console.log("Command options are: 'my-tweets', 'spotify-this-song', 'movie-this', 'or do-what-it-says' ");
     }
 }
 
@@ -50,11 +50,22 @@ function getTweets() {
 
     client.get('statuses/user_timeline', params, function (error, tweets, response) {
         if (!error) {
+            var dataLog = '-----------\n' + 'My tweets:\n' + '------------\n';
             for (var i = 0; i < tweets.length; i++) {
                 //node liri.js my-tweets
                 // This will show your last 20 tweets and when they were created at in your terminal/bash window.
-                console.log("Tweet number " + (i + 1) + ": " + tweets[i].text + " " + "Tweet created " + tweets[i].created_at);
+                dataLog += "Tweet number "
+                    + (i + 1) + ": "
+                    + tweets[i].text + " " + '\n'
+                    + "Tweet created "
+                    + tweets[i].created_at + '\n'
+                    + '--------------------------------------------\n';
+
             }
+            fs.appendFile('./logged.txt', dataLog, (err) => {
+                if (err) throw err;
+                console.log(dataLog);
+            });
         }
     });
 }
@@ -68,7 +79,8 @@ function getSpotify() {
 
     var spotifySearch;
     if (option === undefined) {
-        return console.log("Artist: Ace of Base \nSong's name: 'The Sign' \nPreview Link: 'https://open.spotify.com/track/3DYVWvPh3kGwPasp7yjahc' \nAlbum: 'The Sign' ");
+        spotifySearch = "the sign ace of base"
+        //return console.log("Artist: Ace of Base \nSong's name: 'The Sign' \nPreview Link: 'https://open.spotify.com/track/3DYVWvPh3kGwPasp7yjahc' \nAlbum: 'The Sign' ");
     } else {
         spotifySearch = option;
     }
@@ -80,13 +92,20 @@ function getSpotify() {
 
     spotify.search({ type: 'track', query: spotifySearch, limit: 1 }, function (err, data) {
         if (err) {
+            var dataLog = '-----------\n' + 'Song info:\n' + '------------\n';
             return console.log('Error occurred: ' + err);
         }
         // Artist(s), song's name, a preview link of the song from Spotify, the album that the song is from
-        console.log("Artist : " + data.tracks.items[0].artists[0].name);
-        console.log("Song's name : " + data.tracks.items[0].name);
-        console.log("Preview link : " + data.tracks.items[0].preview_url);
-        console.log("Album : " + data.tracks.items[0].album.name);
+        dataLog = '\n------------\n' + 'Song info:\n' + '------------\n'+'\n' 
+            + "Artist : " + data.tracks.items[0].artists[0].name + '\n'
+            + "Song's name : " + data.tracks.items[0].name + '\n'
+            + "Preview link : " + data.tracks.items[0].preview_url + '\n'
+            + "Album : " + data.tracks.items[0].album.name;
+
+        fs.appendFile('./logged.txt', dataLog, (err) => {
+            if (err) throw err;
+            console.log(dataLog);
+        })
     });
 }
 
@@ -100,7 +119,6 @@ function getMovie() {
     if (option === undefined) {
         movieSearch = "Mr. Nobody";
         //return console.log("Title: " + JSON.parse(body).Title + "\nRelease Year: " + JSON.parse(body).Year + "\nIMDB Rating: " + JSON.parse(body).imdbRating + "\nRotten Tomatoes Rating: " + JSON.parse(body).Value + "\nCountry Where Produced: " + JSON.parse(body).Country + "\nLanguage: " + JSON.parse(body).Language + "\nPlot: " + JSON.parse(body).Plot + "\nActors: " + JSON.parse(body).Actors);
-        //return console.log("Movie title: Mr Nobody \nYear release: 'XXXX' \nIMDB: 'A+' \nAlbum: 'The Sign' ");
     } else {
         movieSearch = option;
     }
@@ -110,9 +128,24 @@ function getMovie() {
     request(queryUrl, function (err, response, body) {
         // If the request is successful
         if (!err && response.statusCode === 200) {
+            var dataLog = '-----------\n' + 'Movie info:\n' + '------------\n';
             // Parse the body of the site and recover to output as so
             // title, year released, imdb rating, rotten tomatoes rating, country of production, movie language, movie plot, movie actors
-            console.log("Title: " + JSON.parse(body).Title + "\nRelease Year: " + JSON.parse(body).Year + "\nIMDB Rating: " + JSON.parse(body).imdbRating + "\nRotten Tomatoes Rating: " + JSON.parse(body).Value + "\nCountry Where Produced: " + JSON.parse(body).Country + "\nLanguage: " + JSON.parse(body).Language + "\nPlot: " + JSON.parse(body).Plot + "\nActors: " + JSON.parse(body).Actors);
+            dataLog =
+                '\n-----------\n' + 'Movie info:\n' + '------------\n'
+                + '\nTitle: ' + JSON.parse(body).Title
+                + '\nRelease Year: ' + JSON.parse(body).Year
+                + "\nIMDB Rating: " + JSON.parse(body).imdbRating
+                + "\nRotten Tomatoes Rating: " + JSON.parse(body).Value
+                + "\nCountry Where Produced: " + JSON.parse(body).Country
+                + "\nLanguage: " + JSON.parse(body).Language
+                + "\nPlot: " + JSON.parse(body).Plot
+                + "\nActors: " + JSON.parse(body).Actors;
+
+            fs.appendFile('./logged.txt', dataLog, (err) => {
+                if (err) throw err;
+                console.log(dataLog);
+            })
         }
     });
 }
@@ -132,11 +165,9 @@ function getUsersChoice() {
             console.log("Log the dataArr index 0: ", dataArr[0]);
             option = dataArr[1];
             console.log("Log the dataArr index 1 : ", dataArr[1]);
-            for (i = 2; i < dataArr.length; i++) {
-                option = option + "+" + dataArr[i];
-            };
-
-            whatToDo();
+            
+            whatToDo();// Execute the do-what-it-says
+            
         };
     });
 };
